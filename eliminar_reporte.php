@@ -107,6 +107,7 @@ if ($conn) {
 <div class="drawer" id="drawer">
         <a href="dashboard.php" onclick="closeDrawer()"><i class="fas fa-home"></i> Inicio
         <a href="salida_material.php" onclick="closeDrawer()"><i class="fas fa-truck-loading"></i>Salida de material</a>
+        <a href="devolucion_material.php" onclick="closeDrawer()"><i class="fas fa-truck fa-flip-horizontal"></i>Devolución de material</a>
         <a href="generar_reporte.php" onclick="closeDrawer()"><i class="fas fa-file-alt"></i>Generar reporte</a>
         <a href="editar_reporte.php"><i class="fas fa-edit"></i>Editar reporte</a>
         <a href="eliminar_reporte.php"><i class="fas fa-trash"></i>Eliminar reporte</a>
