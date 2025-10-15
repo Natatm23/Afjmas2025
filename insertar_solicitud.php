@@ -21,10 +21,12 @@ if (!$conn) {
 $numeroSolicitud = $_POST['numeroSolicitud'] ?? null;
 $departamento = $_POST['departamento'] ?? null;
 $fecha = $_POST['fecha'] ?? null;
+$usuario = $_POST['usuario'] ?? null;
+$idEmpleado = $_POST['idEmpleado'] ?? null;
 
-// Columnas en el orden correcto
+// Columnas en el orden correcto (agregamos IdEmpleado y Usuario)
 $columns = [
-    'FechaElaboracion', 'Departamento',
+    'IdEmpleado', 'Usuario', 'FechaElaboracion', 'Departamento',
     'Material1','Cantidad1','Justificacion1',
     'Material2','Cantidad2','Justificacion2',
     'Material3','Cantidad3','Justificacion3',
@@ -42,6 +44,8 @@ $placeholders = array_fill(0, count($columns), '?');
 
 // Parametros
 $params = [];
+$params[] = $idEmpleado;  // IdEmpleado
+$params[] = $usuario;     // Usuario
 $params[] = $fecha;
 $params[] = $departamento;
 
@@ -60,7 +64,7 @@ $stmt = @sqlsrv_query($conn, $sql, $params);
 if ($stmt) {
     echo "Orden generada correctamente✅.";
 } else {
-    echo "Algo falló, intentalo más tarde❌.";
+    echo "Algo falló, inténtalo más tarde❌.";
     $errs = sqlsrv_errors();
     if ($errs) {
         foreach ($errs as $err) {
