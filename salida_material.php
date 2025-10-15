@@ -274,6 +274,12 @@ $conn = sqlsrv_connect($serverName, $connectionOptions);
     <h1 style="color: #014070; font-size: 22px; text-align: center; margin-bottom: 20px;">📝 Salida de Material</h1>
 
     <form id="formSalidaMaterial" onsubmit="agregarMaterial(); return false;" style="display: flex; flex-direction: column; gap: 16px;">
+
+        <div class="campo">
+            <label for="Usuario">Usuario</label>
+            <input type="text" id="usuario" required>
+        </div>
+    
         <div class="campo">
             <label for="fecha">Fecha</label>
             <input type="date" id="fecha" required readonly>
@@ -282,7 +288,7 @@ $conn = sqlsrv_connect($serverName, $connectionOptions);
        <div class="campo">
     <label for="numero_solicitud">Número de Solicitud</label>
     <input type="text" id="IdNumeroSolicitud" value="<?php echo $nuevoConsecutivo; ?>" readonly>
-</div>
+        </div>
 
 
         <div class="campo">
@@ -394,6 +400,7 @@ function agregarMaterial() {
 }
 
 // Función para generar orden y enviar al servidor
+//falta agregar que se 
 function generarOrden() {
     const numeroSolicitud = document.getElementById("IdNumeroSolicitud").value;
     const departamento = document.getElementById("departamento").value;
@@ -429,4 +436,6 @@ function generarOrden() {
 </script>
 </body>
 </html>
+
+
 

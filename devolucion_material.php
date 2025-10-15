@@ -184,6 +184,13 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
 
     <form id="formDevolucionMaterial" onsubmit="agregarDevolucion(); return false;" style="display: flex; flex-direction: column; gap: 16px;">
         <!-- Campos principales -->
+
+        <div class="campo">
+            <label for="Usuario">Usuario</label>
+            <input type="text" id="usuario" required>
+        </div>
+    
+
         <div class="campo">
             <label for="fecha">Fecha</label>
             <input type="date" id="fecha" name="fecha" required readonly>
@@ -261,7 +268,7 @@ function cerrarSesion() {
     window.location.href = "login.php";
 }
 
-let contador = <?php echo $contadorInicial ?? 0; ?>; // Comienza desde el último registro real
+let contador = <?php echo $contadorInicial ?? 0; ?>; // Comienza desde el último
 
 window.addEventListener("DOMContentLoaded", function () {
     const hoy = new Date();
