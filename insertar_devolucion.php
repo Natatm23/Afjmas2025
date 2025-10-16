@@ -1,86 +1,97 @@
 <?php
+session_start(); 
+
+header('Content-Type: text/plain; charset=utf-8');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Conexión a SQL Server
 $serverName = "10.10.1.144";
-$connectionOptions = array(
+$connectionOptions = [
     "Database" => "Adm_JMAS",
     "Uid" => "sa",
     "PWD" => "Mrrobot2025"
-);
+];
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
 if (!$conn) {
-    die("Conexión fallida: " . print_r(sqlsrv_errors(), true));
+    die("❌ Error: No se pudo conectar a la base de datos.");
 }
 
-// Recibir datos del formulario
-$numeroDevolucion = $_POST['numeroDevolucion'];
-$departamento = $_POST['departamento'];
-$fecha = $_POST['fecha'];
+// Variables principales
+$numeroDevolucion = $_POST['numeroDevolucion'] ?? null;
+$departamento     = $_POST['departamento'] ?? $_SESSION['NombreDepartamento'] ?? null;
+$fecha            = $_POST['fecha'] ?? null;
+$usuario          = $_POST['usuario'] ?? null;
+$idEmpleado       = $_POST['idEmpleado'] ?? $_SESSION['id_empleado'] ?? null;
 
-// Traer filas de la tabla de devoluciones
+// Recolectar materiales
 $filas = [];
 for ($i = 1; $i <= 10; $i++) {
-    $mat = isset($_POST['material' . $i]) ? trim($_POST['material' . $i]) : null;
-    $cant = isset($_POST['cantidad' . $i]) ? trim($_POST['cantidad' . $i]) : null;
-    $just = isset($_POST['justificacion' . $i]) ? trim($_POST['justificacion' . $i]) : null;
+    $mat  = $_POST['material' . $i] ?? null;
+    $cant = $_POST['cantidad' . $i] ?? null;
+    $just = $_POST['justificacion' . $i] ?? null;
 
-    // Solo agregar si los tres campos tienen valor
-    if ($mat !== null && $cant !== null && $just !== null && $mat !== "" && $just !== "") {
+    if ($mat && $cant && $just) {
         $filas[] = [
-            'Material' => $mat,
-            'Cantidad' => $cant,
-            'Justificacion' => $just
+            'Material' => trim($mat),
+            'Cantidad' => trim($cant),
+            'Justificacion' => trim($just)
         ];
     }
 }
 
-// Obtener el último número de devolución
-$sqlUltimo = "SELECT MAX(numeroDevolucion) AS maxNum FROM AFM_Devolucion_Material";
-$stmt = sqlsrv_query($conn, $sqlUltimo);
-
-$contadorInicial = 0;
-if ($stmt) {
-    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-    if ($row['maxNum'] !== null) {
-        $contadorInicial = (int)$row['maxNum'];
-    }
-}
-    
-// Validar que al menos exista la primera fila (Material1)
+// Validar que al menos haya una fila
 if (count($filas) == 0) {
     die("Debe agregar al menos un material para la devolución.");
 }
 
-// Preparar campos y parámetros para SQL
-$campos = ["FechaElaboracion", "Departamento"];
-$valores = ["?", "?"];
-$params = [$fecha, $departamento];
+// Columnas base
+$columns = [
+    'IdEmpleado', 'Usuario', 'FechaElaboracion', 'Departamento',
+    'Material1','Cantidad1','Justificacion1',
+    'Material2','Cantidad2','Justificacion2',
+    'Material3','Cantidad3','Justificacion3',
+    'Material4','Cantidad4','Justificacion4',
+    'Material5','Cantidad5','Justificacion5',
+    'Material6','Cantidad6','Justificacion6',
+    'Material7','Cantidad7','Justificacion7',
+    'Material8','Cantidad8','Justificacion8',
+    'Material9','Cantidad9','Justificacion9',
+    'Material10','Cantidad10','Justificacion10'
+];
 
-foreach ($filas as $index => $fila) {
-    $i = $index + 1; // Para Material1, Material2…
-    $campos[] = "Material$i";
-    $campos[] = "Justificacion$i";
-    $campos[] = "Cantidad$i";
+// Placeholders
+$placeholders = array_fill(0, count($columns), '?');
 
-    $valores[] = "?";
-    $valores[] = "?";
-    $valores[] = "?";
+// Parametros
+$params = [];
+$params[] = $idEmpleado;
+$params[] = $usuario;
+$params[] = $fecha;
+$params[] = $departamento;
 
-    $params[] = $fila['Material'];
-    $params[] = $fila['Justificacion'];
-    $params[] = $fila['Cantidad'];
+for ($i = 1; $i <= 10; $i++) {
+    $params[] = $_POST["material{$i}"] ?? null;
+    $params[] = $_POST["cantidad{$i}"] ?? null;
+    $params[] = $_POST["justificacion{$i}"] ?? null;
 }
 
-$campos_str = implode(", ", $campos);
-$valores_str = implode(", ", $valores);
-$sql = "INSERT INTO AFM_Devolucion_Material ($campos_str) VALUES ($valores_str)";
+// SQL
+$sql = "INSERT INTO AFM_Devolucion_Material (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $placeholders) . ")";
 
-// Ejecutar la consulta
+// Ejecutar query
 $stmt = sqlsrv_query($conn, $sql, $params);
 
-if ($stmt === false) {
-    die("Error al insertar la devolución: " . print_r(sqlsrv_errors(), true));
+if ($stmt) {
+    echo "✅ Devolución registrada correctamente.";
 } else {
-    echo "Devolución registrada correctamente";
+    echo "❌ Error al insertar la devolución.";
+    $errs = sqlsrv_errors();
+    if ($errs) {
+        foreach ($errs as $err) {
+            echo " SQLSTATE: ".$err['SQLSTATE']."; Code: ".$err['code']."; Message: ".$err['message']."\n";
+        }
+    }
 }
 ?>

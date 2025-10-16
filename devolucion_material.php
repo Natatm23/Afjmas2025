@@ -1,5 +1,19 @@
 <?php
-// Conexión a SQL Server
+//Iniciar sesión y recuperar datos del usuario logueado
+session_start();
+
+// Si no hay sesión, redirigir al login
+if (!isset($_SESSION['usuario'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Guardar variables desde la sesión
+$usuario = $_SESSION['usuario'];
+$id_empleado = $_SESSION['id_empleado'];
+$nombre_departamento = $_SESSION['nombre_departamento'];
+
+//Conexión a SQL Server
 $serverName = "10.10.1.144";
 $connectionOptions = array(
     "Database" => "Adm_JMAS",
@@ -8,13 +22,17 @@ $connectionOptions = array(
 );
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
-// Traer el último número de devolución
+if (!$conn) {
+    die("Error de conexión: " . print_r(sqlsrv_errors(), true));
+}
+
+// Traer el último número de solicitud
 $sql = "SELECT MAX(IdNumeroDevolucion) AS ultimo FROM AFM_Devolucion_Material"; 
 $stmt2 = sqlsrv_query($conn, $sql);
 if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
     $nuevoConsecutivo = $row2['ultimo'] + 1;
 } else {
-    $nuevoConsecutivo = 1;
+    $nuevoConsecutivo = 1; // En caso de que no haya registros
 }
 
 ?>
@@ -186,8 +204,9 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
         <!-- Campos principales -->
 
         <div class="campo">
-            <label for="Usuario">Usuario</label>
-            <input type="text" id="usuario" required>
+            <label for="usuario">Usuario</label>
+            <input type="text" id="usuario" name="usuario" 
+           value="<?php echo htmlspecialchars($usuario); ?>" readonly>
         </div>
     
 
@@ -203,7 +222,7 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
 
         <div class="campo">
             <label for="departamento">Departamento</label>
-            <select id="departamento" name="departamento" required>
+            <select id="departamento" name="departamento" disabled>
                 <option value="">Seleccione un departamento</option>
                 <?php include("obtener_departamentos.php"); ?>
             </select>
@@ -291,6 +310,7 @@ function cerrarSesion() {
     window.location.href = "login.php";
 }
 
+//Funcion para agregar material a la tabla
 function agregarDevolucion() {
     const material = document.getElementById("material").value.trim();
     const cantidad = document.getElementById("cantidad").value.trim();
@@ -331,8 +351,29 @@ function eliminarFila(btn) {
 }
 
 function generarDevolucion() {
-    const form = document.getElementById("formDevolucionMaterial");
-    const formData = new FormData(form);
+    const numeroDevolucion = document.getElementById("IdNumeroDevolucion").value;
+    const departamento = document.getElementById("departamento").value;
+    const fecha = document.getElementById("fecha").value;
+    const usuario = document.getElementById("usuario").value;
+    const idEmpleado = "<?php echo $_SESSION['id_empleado']; ?>"; 
+
+    const filas = document.querySelectorAll("#tablaDevoluciones tbody tr");
+    const formData = new FormData();
+
+    formData.append("numeroDevolucion", numeroDevolucion);
+    formData.append("departamento", departamento);
+    formData.append("fecha", fecha);
+    formData.append("usuario", usuario);
+    formData.append("idEmpleado", idEmpleado); 
+
+    filas.forEach((fila, index) => {
+        if (index < 10) {
+            const celdas = fila.getElementsByTagName("td");
+            formData.append("material" + (index + 1), celdas[0].textContent);
+            formData.append("cantidad" + (index + 1), celdas[1].textContent);
+            formData.append("justificacion" + (index + 1), celdas[2].textContent);
+        }
+    });
 
     fetch("insertar_devolucion.php", {
         method: "POST",
@@ -345,6 +386,26 @@ function generarDevolucion() {
     })
     .catch(err => console.error(err));
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const departamento = "<?php echo $nombre_departamento; ?>";
+    const select = document.getElementById("departamento");
+    for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].text === departamento) {
+            select.selectedIndex = i;
+            break;
+        }
+    }
+});
+
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+

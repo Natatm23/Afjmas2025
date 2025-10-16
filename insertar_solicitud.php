@@ -44,8 +44,8 @@ $placeholders = array_fill(0, count($columns), '?');
 
 // Parametros
 $params = [];
-$params[] = $idEmpleado;  // IdEmpleado
-$params[] = $usuario;     // Usuario
+$params[] = $idEmpleado;  
+$params[] = $usuario;     
 $params[] = $fecha;
 $params[] = $departamento;
 

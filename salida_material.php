@@ -1,5 +1,5 @@
 <?php
-// 🧠 1️⃣ Iniciar sesión y recuperar datos del usuario logueado
+//Iniciar sesión y recuperar datos del usuario logueado
 session_start();
 
 // Si no hay sesión, redirigir al login
@@ -13,7 +13,7 @@ $usuario = $_SESSION['usuario'];
 $id_empleado = $_SESSION['id_empleado'];
 $nombre_departamento = $_SESSION['nombre_departamento'];
 
-// 🧩 2️⃣ Conexión a SQL Server
+//Conexión a SQL Server
 $serverName = "10.10.1.144";
 $connectionOptions = array(
     "Database" => "Adm_JMAS",
@@ -26,7 +26,7 @@ if (!$conn) {
     die("Error de conexión: " . print_r(sqlsrv_errors(), true));
 }
 
-// 🧾 3️⃣ Traer el último número de solicitud
+// Traer el último número de solicitud
 $sql = "SELECT MAX(IdNumeroSolicitud) AS ultimo FROM AFM_Salida_Material"; 
 $stmt2 = sqlsrv_query($conn, $sql);
 if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
@@ -422,7 +422,7 @@ function generarOrden() {
     const departamento = document.getElementById("departamento").value;
     const fecha = document.getElementById("fecha").value;
     const usuario = document.getElementById("usuario").value;
-    const idEmpleado = "<?php echo $_SESSION['id_empleado']; ?>"; // <-- agregar id empleado
+    const idEmpleado = "<?php echo $_SESSION['id_empleado']; ?>"; 
 
     const filas = document.querySelectorAll("#tablaMateriales tbody tr");
     const formData = new FormData();
