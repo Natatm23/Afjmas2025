@@ -1,181 +1,241 @@
+<?php
+@include_once('conexion_stock.php'); 
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard AFFIJO2025</title>
-    <!-- Iconos de Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard AFFIJO2025 - Stock</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; }
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+/* Toolbar */
+.toolbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 55px;
+    background: rgb(1,62,112);
+    color: #fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 0 16px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.2);
+    z-index: 1002;
+}
+.menu-icon { font-size:24px; cursor:pointer; user-select:none; }
+.logo-container { position:absolute; left:50%; transform:translateX(-50%); }
+.logo-container img { height:35px; display:block; }
+.logout-button { background:none; border:none; color:white; font-size:20px; cursor:pointer; }
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9f9;
-        }
+/* Drawer */
+.drawer {
+    position: fixed;
+    top: 0; left: -260px;
+    width: 260px; height: 100%;
+    background:#fff;
+    box-shadow:2px 0 8px rgba(0,0,0,0.12);
+    padding-top:56px;
+    transition: left .28s ease;
+    z-index: 1001;
+}
+.drawer.open { left: 0; }
+.drawer a {
+    display:flex; align-items:center; gap:12px;
+    padding:14px 18px; color:#333; text-decoration:none; border-bottom:1px solid #eee;
+}
+.drawer a:hover { background:#f5f5f5; }
 
-        .toolbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 55px;
-            background-color: rgb(1, 62, 112);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            z-index: 1001;
-        }
+/* Overlay */
+.overlay {
+    position: fixed; inset:0;
+    background: rgba(0,0,0,0.32);
+    display: none;
+    z-index: 1000;
+}
+.overlay.show { display:block; }
 
-        .toolbar .menu-icon {
-            font-size: 25px;
-            cursor: pointer;
-        }
+/* Content */
+.content { padding: 72px 16px 24px 16px; max-width: 1200px; margin:auto; }
 
-        .toolbar .logo-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+/* Dashboard widgets area (arriba izquierda) */
+.widgets {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:16px;
+}
+.widget {
+    flex:1 1 150px;
+    background:#fff;
+    border-radius:10px;
+    padding:12px 16px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+    min-width:120px;
+    text-align:center;
+    font-size:14px;
+}
 
-        .toolbar .logo-container img {
-            height: 35px;
-        }
+/* Stock card / table */
+.stock-container {
+    background:#fff; border-radius:12px; padding:20px;
+    box-shadow:0 6px 18px rgba(3,15,30,0.06);
+}
+.stock-container h2 { color: rgb(1,62,112); margin-bottom:12px; display:flex;align-items:center;gap:8px; }
 
-        .logout-button {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 22px;
-            cursor: pointer;
-        }
+/* Table responsive wrapper */
+.table-wrapper {
+    overflow-x:auto;
+}
+.stock-table { width:100%; border-collapse:collapse; min-width:400px; }
+.stock-table thead { background: rgb(1,62,112); color:#fff; }
+.stock-table th, .stock-table td { padding:10px 12px; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.stock-table tr:nth-child(even){ background:#f6f9fc; }
+.stock-table tr:hover{ background:#e9f4ff; }
+.no-data { text-align:center; color:#777; padding:18px 0; }
 
-        .logout-button:hover {
-            color: #ccc;
-        }
-
-        .drawer {
-            position: fixed;
-            top: 0px;
-            left: -250px;
-            width: 250px;
-            height: 100%;
-            background-color: #fff;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            padding-top: 56px;
-            transition: left 0.3s ease;
-            z-index: 1000;
-        }
-
-        .drawer.open {
-            left: 0;
-        }
-
-        .drawer a {
-            padding: 14px 20px;
-            text-decoration: none;
-            color: #333;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .drawer a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .drawer a i {
-            width: 25px; 
-            text-align: center;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%; 
-            height: 100%;
-            background-color: rgba(0,0,0,0.3);
-            display: none;
-            z-index: 999;
-        }
-
-        .overlay.show {
-            display: block;
-        }
-
-        .content {
-            padding: 72px 16px 16px 16px;
-        }
-    </style>
+/* Responsive */
+@media (max-width:760px) {
+    .stock-table th, .stock-table td { padding:8px 10px; white-space:normal; }
+    .logo-container img { height:30px; }
+    .widgets { flex-direction: column; }
+}
+</style>
 </head>
-
 <body>
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-        <div class="menu-icon" onclick="toggleDrawer()">☰</div>
-        
-        <div class="logo-container">
-            <img src="JMAS blanco.png" class="logo-img" alt="Logo de AFFIJO2025">
+<!-- Toolbar -->
+<div class="toolbar">
+    <div class="menu-icon" id="menuToggle" aria-label="Abrir menú">☰</div>
+    <div class="logo-container">
+        <img src="JMAS blanco.png" alt="Logo AFFIJO2025">
+    </div>
+    <button class="logout-button" onclick="cerrarSesion()" title="Cerrar sesión">
+        <i class="fas fa-sign-out-alt"></i>
+    </button>
+</div>
+
+<!-- Drawer -->
+<nav id="drawer" class="drawer" aria-hidden="true">
+    <a href="dashboard.php"><i class="fas fa-home"></i> Inicio</a>
+    <a href="salida_material.php"><i class="fas fa-truck-loading"></i> Salida de material</a>
+    <a href="devolucion_material.php"><i class="fas fa-truck fa-flip-horizontal"></i> Devolución de material</a>
+    <a href="generar_reporte.php"><i class="fas fa-file-alt"></i> Generar reporte</a>
+    <a href="editar_reporte.php"><i class="fas fa-edit"></i> Editar reporte</a>
+    <a href="eliminar_reporte.php"><i class="fas fa-trash"></i> Eliminar reporte</a>
+    <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
+    <a href="#"><i class="fas fa-user"></i> Mi información</a>
+    <a href="#" onclick="cerrarSesion(); return false;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+</nav>
+
+<!-- Overlay -->
+<div id="overlay" class="overlay" role="button" aria-label="Cerrar menú"></div>
+
+<!-- Contenido principal -->
+<main class="content" id="mainContent">
+
+    <!-- Widgets / indicadores -->
+    <div class="widgets">
+        <div class="widget">Total Materiales: <?php 
+            if(isset($conn) && $conn){
+                $res = sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM AFM_Stock_Unidad141");
+                $row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC);
+                echo $row['total'] ?? '0';
+            } else { echo '0'; }
+        ?></div>
+        <div class="widget">Materiales sin stock: <?php 
+            if(isset($conn) && $conn){
+                $res = sqlsrv_query($conn, "SELECT COUNT(*) AS sin FROM AFM_Stock_Unidad141 WHERE Cantidad=0");
+                $row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC);
+                echo $row['sin'] ?? '0';
+            } else { echo '0'; }
+        ?></div>
+        <div class="widget">Materiales disponibles: <?php 
+            if(isset($conn) && $conn){
+                $res = sqlsrv_query($conn, "SELECT SUM(Cantidad) AS totalDisp FROM AFM_Stock_Unidad141");
+                $row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC);
+                echo $row['totalDisp'] ?? '0';
+            } else { echo '0'; }
+        ?></div>
+    </div>
+
+    <!-- Stock -->
+    <div class="stock-container">
+        <h2><i class="fas fa-boxes"></i> Inventario de Stock</h2>
+        <div class="table-wrapper">
+            <table class="stock-table" aria-describedby="stock-desc">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descripción</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+<?php
+if(isset($conn) && $conn){
+    $sql = "SELECT Id_Material, Descripcion, Cantidad FROM AFM_Stock_Unidad141 ORDER BY Id_Material";
+    $result = @sqlsrv_query($conn, $sql);
+
+    if($result && sqlsrv_has_rows($result)){
+        while($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)){
+            $codigo = htmlspecialchars($row['Id_Material']);
+            $desc   = htmlspecialchars($row['Descripcion']);
+            $cant   = htmlspecialchars($row['Cantidad']);
+            echo "<tr><td>{$codigo}</td><td title=\"{$desc}\">{$desc}</td><td>{$cant}</td></tr>";
+        }
+    } else {
+        echo '<tr><td colspan="3" class="no-data">No hay registros disponibles.</td></tr>';
+    }
+}
+?>
+                </tbody>
+            </table>
         </div>
-
-        <button class="logout-button" onclick="cerrarSesion()" title="Cerrar sesión">
-            <i class="fas fa-sign-out-alt"></i>
-        </button>
     </div>
 
-    <!-- Drawer  menú-->
-    <div class="drawer" id="drawer">
-        <a href="dashboard.php" onclick="closeDrawer()"><i class="fas fa-home"></i> Inicio
-        <a href="salida_material.php" onclick="closeDrawer()"><i class="fas fa-truck-loading"></i>Salida de material</a>
-        <a href="devolucion_material.php" onclick="closeDrawer()"><i class="fas fa-truck fa-flip-horizontal"></i>Devolución de material</a>
-        <a href="generar_reporte.php" onclick="closeDrawer()"><i class="fas fa-file-alt"></i>Generar reporte</a>
-        <a href="editar_reporte.php"><i class="fas fa-edit"></i>Editar reporte</a>
-        <a href="eliminar_reporte.php"><i class="fas fa-trash"></i>Eliminar reporte</a>
-        <a href="salida_material.php" onclick="closeDrawer()"><i class="fas fa-arrow-alt-circle-right"></i>Mis salidas de material</a>
-        <a href="#" onclick="closeDrawer()"><i class="fas fa-user"></i>Mi información</a>
-        <a href="#" onclick="cerrarSesion(); closeDrawer();"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a>
-    </div>
+</main>
 
-    <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const menuToggle = document.getElementById('menuToggle');
 
-    <div class="content">
-        <h1>Bienvenido al Panel Principal</h1>
-        <p>Has iniciado sesión correctamente.</p>
-    </div>
+    if(!drawer || !overlay || !menuToggle) return;
 
-    <script>
-        function toggleDrawer() {
-            const drawer = document.getElementById("drawer");
-            const overlay = document.getElementById("overlay");
-            drawer.classList.toggle("open");
-            overlay.classList.toggle("show");
-        }
+    function openDrawer() {
+        drawer.classList.add('open');
+        overlay.classList.add('show');
+        drawer.setAttribute('aria-hidden','false');
+    }
+    function closeDrawer() {
+        drawer.classList.remove('open');
+        overlay.classList.remove('show');
+        drawer.setAttribute('aria-hidden','true');
+    }
 
-        function closeDrawer() {
-            document.getElementById("drawer").classList.remove("open");
-            document.getElementById("overlay").classList.remove("show");
-        }
+    menuToggle.addEventListener('click', function(){
+        if(drawer.classList.contains('open')) closeDrawer();
+        else openDrawer();
+    });
 
-        function cerrarSesion() {
-            if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
-                alert("Cerrando sesión...");
-                window.location.href = "login.php";
-            }
-        }
-    </script>
+    overlay.addEventListener('click', closeDrawer);
 
+    document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape') closeDrawer();
+    });
+
+    console.log('Toolbar + Drawer activos');
+});
+
+function cerrarSesion(){
+    if(confirm('¿Estás seguro de que quieres cerrar sesión?')){
+        window.location.href='login.php';
+    }
+}
+</script>
 </body>
 </html>

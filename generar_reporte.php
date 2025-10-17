@@ -1,4 +1,18 @@
 <?php
+//Iniciar sesión y recuperar datos del usuario logueado
+session_start();
+
+// Si no hay sesión, redirigir al login
+if (!isset($_SESSION['usuario'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Guardar variables desde la sesión
+$usuario = $_SESSION['usuario'];
+$id_empleado = $_SESSION['id_empleado'];
+$nombre_departamento = $_SESSION['nombre_departamento'];
+
 // Conexión a SQL Server
 $serverName = "10.10.1.144";
 $connectionOptions = array(
@@ -120,7 +134,7 @@ if ($conn) {
         <a href="generar_reporte.php" onclick="closeDrawer()"><i class="fas fa-file-alt"></i>Generar reporte</a>
         <a href="editar_reporte.php"><i class="fas fa-edit"></i>Editar reporte</a>
         <a href="eliminar_reporte.php"><i class="fas fa-trash"></i>Eliminar reporte</a>
-        <a href="salida_material.php" onclick="closeDrawer()"><i class="fas fa-arrow-alt-circle-right"></i>Mis salidas de material</a>
+        <a href="#" onclick="closeDrawer()"><i class="fas fa-boxes"></i> Stock</a>
         <a href="#" onclick="closeDrawer()"><i class="fas fa-user"></i>Mi información</a>
         <a href="#" onclick="cerrarSesion(); closeDrawer();"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a>
     </div>
@@ -134,12 +148,15 @@ if ($conn) {
         <!-- DEPARTAMENTO -->
         <div class="campo">
             <label for="departamento">Departamento</label>
-            <select id="departamento" name="departamento" required>
-                <option value="">Selecciona una opción</option>
-                <?php foreach ($departamentos as $dep): ?>
-                    <option value="<?= htmlspecialchars($dep) ?>"><?= htmlspecialchars($dep) ?></option>
-                <?php endforeach; ?>
+            <select id="departamento" name="departamento" disabled>
+                <option value="">Seleccione un departamento</option>
+                <?php include("obtener_departamentos.php"); ?>
             </select>
+
+        <div class="campo">
+            <label for="usuario">Técnico</label>
+            <input type="text" id="usuario" name="usuario" 
+            value="<?php echo htmlspecialchars($usuario); ?>" readonly>
         </div>
 
         <!-- ID TICKET -->
@@ -159,44 +176,15 @@ if ($conn) {
             <input type="date" id="fecha_reparacion" name="fecha_reparacion" required>
         </div>
 
-        <!-- COLONIA Y DIRECCION -->
+        
+
+        
         <div class="campo">
-            <label for="colonia">Colonia</label>
-            <input type="text" id="colonia" name="colonia" required>
+            <label for="Observacion">Observaciones</label>
+            <textarea id="Observaciones" name="Observaciones" rows="5" required></textarea>
         </div>
 
-        <div class="campo">
-            <label for="direccion">Dirección</label>
-            <input type="text" id="direccion" name="direccion" required>
-        </div>
-
-        <!-- TIPO DE SUELO -->
-        <div class="campo">
-            <label for="tipo_suelo">Tipo de suelo</label>
-            <select id="tipo_suelo" name="tipo_suelo" required>
-                <option value="">Selecciona una opción</option>
-                <option value="Terracería">TERRACERIA</option>
-                <option value="Concreto">CONCRETO</option>
-                <option value="Pavimento">PAVIMENTO</option>
-            </select>
-        </div>
-
-        <!-- REPORTANTE Y TELEFONO -->
-        <div class="campo">
-            <label for="reportante">Reportante</label>
-            <input type="text" id="reportante" name="reportante" required>
-        </div>
-
-        <div class="campo">
-            <label for="telefono">Teléfono del reportante</label>
-            <input type="tel" id="telefono" name="telefono" pattern="[0-9]{10}" maxlength="10" required>
-        </div>
-
-        <!-- TECNICO Y N° SOLICITUD -->
-        <div class="campo">
-            <label for="tecnico">Técnico</label>
-            <input type="text" id="tecnico" name="tecnico" required>
-        </div>
+     
 
         <div class="campo">
             <label for="solicitud_materiales">Número de solicitud de materiales</label>
@@ -205,19 +193,19 @@ if ($conn) {
 
         <!-- FOTOS -->
         <div class="campo">
-            <label>Foto 1</label>
+            <label>Foto Medidor anterior:</label>
             <input type="file" name="foto1" accept="image/*">
         </div>
         <div class="campo">
-            <label>Foto 2</label>
+            <label>Foto Domicilio:</label>
             <input type="file" name="foto2" accept="image/*">
         </div>
         <div class="campo">
-            <label>Foto 3</label>
+            <label>Foto Medidor nuevo instalado:</label>
             <input type="file" name="foto3" accept="image/*">
         </div>
         <div class="campo">
-            <label>Foto 4</label>
+            <label>Foto Notificacion:</label>
             <input type="file" name="foto4" accept="image/*">
         </div>
 

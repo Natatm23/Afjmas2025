@@ -34,8 +34,8 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
 } else {
     $nuevoConsecutivo = 1; // En caso de que no haya registros
 }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -189,7 +189,7 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
     <a href="generar_reporte.php" onclick="closeDrawer()"><i class="fas fa-file-alt"></i> Generar reporte</a>
     <a href="editar_reporte.php"><i class="fas fa-edit"></i> Editar reporte</a>
     <a href="eliminar_reporte.php"><i class="fas fa-trash"></i> Eliminar reporte</a>
-    <a href="salida_material.php" onclick="closeDrawer()"><i class="fas fa-arrow-alt-circle-right"></i> Mis salidas de material</a>
+    <a href="#" onclick="closeDrawer()"><i class="fas fa-boxes"></i> Stock</a>
     <a href="#" onclick="closeDrawer()"><i class="fas fa-user"></i> Mi información</a>
     <a href="#" onclick="cerrarSesion(); closeDrawer();"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
 </div>
@@ -401,11 +401,3 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
