@@ -352,7 +352,7 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
     <tbody>
         <!-- Filas agregadas dinámicamente -->
     </tbody>
-</table>
+        </table>
     </div>
 
     <button class="boton-generar" onclick="generarOrden()">🧾 Generar Orden de Salida</button>
@@ -385,7 +385,7 @@ function agregarMaterial() {
     const cantidad = document.getElementById("cantidad").value;
     const justificacion = document.getElementById("justificacion").value;
 
-    if (!material || !justificacion || !cantidad) {
+    if (!material || !cantidad || !justificacion) {
         alert("Por favor completa todos los campos antes de agregar el material.");
         return;
     }
@@ -395,8 +395,8 @@ function agregarMaterial() {
 
     // Insertar datos en las celdas
     fila.insertCell(0).textContent = material;
-    fila.insertCell(1).textContent = justificacion;
-    fila.insertCell(2).textContent = cantidad;
+    fila.insertCell(1).textContent = cantidad;
+    fila.insertCell(2).textContent = justificacion;
 
     // Botón eliminar
     const celdaAccion = fila.insertCell(3);
@@ -437,8 +437,8 @@ function generarOrden() {
         if (index < 10) {
             const celdas = fila.getElementsByTagName("td");
             formData.append("material" + (index + 1), celdas[0].textContent);
-            formData.append("justificacion" + (index + 1), celdas[1].textContent);
-            formData.append("cantidad" + (index + 1), celdas[2].textContent);
+            formData.append("cantidad" + (index + 1), celdas[1].textContent);
+            formData.append("justificacion" + (index + 1), celdas[2].textContent);
         }
     });
 

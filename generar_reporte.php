@@ -111,6 +111,133 @@ if ($conn) {
             border-radius: 12px;
             cursor: pointer;
         }
+
+        .boton-agregar {
+            background-color: #014070;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(1, 64, 112, 0.2);
+        }
+
+        .boton-agregar:hover {
+            background-color: #012d50;
+        }
+
+        table {
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 13px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        td button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        td button:hover {
+            background-color: darkred;
+        }
+
+        .boton-generar {
+            margin-top: 20px;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
+        }
+
+        .boton-generar:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 600px) {
+            h1, h2 {
+                font-size: 18px;
+            }
+
+            .boton-agregar,
+            .boton-generar {
+                font-size: 15px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+        }
+
+        .fotos-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.foto-item {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+    margin-bottom: 15px;
+}
+
+.preview-wrapper {
+    position: relative;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.preview-img {
+    display: none;
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.btn-quitar {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255,0,0,0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 2;
+}
+
+@media (max-width: 600px){
+    .foto-item { width: 100%; }
+}
+
     </style>
 </head>
 <body>
@@ -175,56 +302,174 @@ if ($conn) {
             <label for="fecha_reparacion">Fecha de reparación</label>
             <input type="date" id="fecha_reparacion" name="fecha_reparacion" required>
         </div>
-
-        
-
-        
+   
         <div class="campo">
             <label for="Observacion">Observaciones</label>
             <textarea id="Observaciones" name="Observaciones" rows="5" required></textarea>
         </div>
 
-     
+        <h1><i class="fas fa-tools"></i> Materiales utilizados</h1>
+
+       <div class="campo">
+            <label for="material">Codigo del material</label>
+            <input type="text" id="material" required>
+        </div>
 
         <div class="campo">
-            <label for="solicitud_materiales">Número de solicitud de materiales</label>
-            <input type="number" id="solicitud_materiales" name="solicitud_materiales" required>
+            <label for="cantidad">Cantidad</label>
+            <input type="number" id="cantidad" required min="1" step="1">
         </div>
 
-        <!-- FOTOS -->
-        <div class="campo">
-            <label>Foto Medidor anterior:</label>
-            <input type="file" name="foto1" accept="image/*">
-        </div>
-        <div class="campo">
-            <label>Foto Domicilio:</label>
-            <input type="file" name="foto2" accept="image/*">
-        </div>
-        <div class="campo">
-            <label>Foto Medidor nuevo instalado:</label>
-            <input type="file" name="foto3" accept="image/*">
-        </div>
-        <div class="campo">
-            <label>Foto Notificacion:</label>
-            <input type="file" name="foto4" accept="image/*">
-        </div>
+        
 
-        <button type="submit" class="boton-generar">🧾 Generar Reporte</button>
+        <button type="submit" class="boton-agregar">➕ Agregar Material</button>
     </form>
+
+    <h2 style="margin-top: 30px; font-size: 18px; color: #014070;">📦 Materiales Agregados</h2>
+
+    <div style="overflow-x: auto; margin-top: 10px;">
+        <table id="tablaMateriales">
+    <thead style="background-color: #014070; color: white;">
+        <tr>
+            <th>Departamento</th>
+            <th>Técnico</th>
+             <th>Id ticket</th>  
+            <th>Código material</th>
+            <th>Cantidad</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Filas agregadas dinámicamente -->
+    </tbody>
+        </table>
+    </div>
+</div>
+<!-- FOTOS -->
+<div class="fotos-container">
+  <div class="foto-item">
+    <label>Foto Medidor anterior:</label>
+    <input type="file" name="foto1" accept="image/*" id="foto1" onchange="mostrarPreview('foto1','preview1')">
+    <div class="preview-wrapper">
+      <button type="button" class="btn-quitar" onclick="limpiarFoto('foto1','preview1')">❌</button>
+      <img id="preview1" src="" alt="Preview" class="preview-img">
+    </div>
+  </div>
+
+  <div class="foto-item">
+    <label>Foto Domicilio:</label>
+    <input type="file" name="foto2" accept="image/*" id="foto2" onchange="mostrarPreview('foto2','preview2')">
+    <div class="preview-wrapper">
+      <button type="button" class="btn-quitar" onclick="limpiarFoto('foto2','preview2')">❌</button>
+      <img id="preview2" src="" alt="Preview" class="preview-img">
+    </div>
+  </div>
+
+  <div class="foto-item">
+    <label>Foto Medidor nuevo instalado:</label>
+    <input type="file" name="foto3" accept="image/*" id="foto3" onchange="mostrarPreview('foto3','preview3')">
+    <div class="preview-wrapper">
+      <button type="button" class="btn-quitar" onclick="limpiarFoto('foto3','preview3')">❌</button>
+      <img id="preview3" src="" alt="Preview" class="preview-img">
+    </div>
+  </div>
+
+  <div class="foto-item">
+    <label>Foto Notificación:</label>
+    <input type="file" name="foto4" accept="image/*" id="foto4" onchange="mostrarPreview('foto4','preview4')">
+    <div class="preview-wrapper">
+      <button type="button" class="btn-quitar" onclick="limpiarFoto('foto4','preview4')">❌</button>
+      <img id="preview4" src="" alt="Preview" class="preview-img">
+    </div>
+  </div>
+  
+    <button class="boton-generar" onclick="generarOrden()">🧾 Generar Reporte</button>
 </div>
 
+
 <script>
-    function toggleDrawer() {
-        document.getElementById("drawer").classList.toggle("open");
-        document.getElementById("overlay").classList.toggle("show");
-    }
+// Funciones globales para toolbar y drawer
+function toggleDrawer() {
+    const drawer = document.getElementById("drawer");
+    drawer.classList.toggle("open");
+}
 
-    function cerrarSesion() {
-        alert("Sesión cerrada correctamente");
-        window.location.href = "login.php";
+function closeDrawer() {
+    const drawer = document.getElementById("drawer");
+    drawer.classList.remove("open");
+}
+
+function cerrarSesion() {
+    alert("Sesión cerrada correctamente");
+    window.location.href = "login.php";
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const botonAgregar = document.querySelector(".boton-agregar");
+    botonAgregar.addEventListener("click", function(event) {
+        event.preventDefault();
+        agregarMaterial();
+    });
+
+    function agregarMaterial() {
+        const departamento = document.getElementById("departamento").value.trim();
+        const tecnico = document.getElementById("usuario").value.trim();
+        const idTicket = document.getElementById("id_ticket").value.trim();
+        const material = document.getElementById("material").value.trim();
+        const cantidad = document.getElementById("cantidad").value.trim();
+
+        if (!departamento || !tecnico || !idTicket || !material || !cantidad) {
+            alert("Por favor completa todos los campos antes de agregar el material.");
+            return;
+        }
+
+        const tabla = document.getElementById("tablaMateriales").getElementsByTagName('tbody')[0];
+        const fila = tabla.insertRow();
+
+        fila.insertCell(0).textContent = departamento;
+        fila.insertCell(1).textContent = tecnico;
+        fila.insertCell(2).textContent = idTicket;
+        fila.insertCell(3).textContent = material;
+        fila.insertCell(4).textContent = cantidad;
+
+        const celdaAccion = fila.insertCell(5);
+        const botonEliminar = document.createElement("button");
+        botonEliminar.innerText = "❌";
+        botonEliminar.type = "button";
+        botonEliminar.className = "boton-eliminar";
+        botonEliminar.onclick = function () {
+            tabla.deleteRow(fila.rowIndex - 1);
+        };
+        celdaAccion.appendChild(botonEliminar);
+
+        document.getElementById("material").value = "";
+        document.getElementById("cantidad").value = "";
+        document.getElementById("material").focus();
     }
+});
+
+// Funciones globales para fotos
+function mostrarPreview(inputId, imgId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(imgId);
+
+    if(input.files && input.files[0]){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function limpiarFoto(inputId, imgId){
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(imgId);
+
+    input.value = '';
+    preview.src = '';
+    preview.style.display = 'none';
+}
 </script>
-
 </body>
 </html>
-
