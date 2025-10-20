@@ -257,6 +257,26 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
                 font-size: 12px;
             }
         }
+        .sugerencias-lista {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            max-height: 150px;
+            overflow-y: auto;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .sugerencia-item {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sugerencia-item:hover {
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -320,7 +340,7 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
         </div>
 
         <div class="campo">
-            <label for="material">Codigo del material</label>
+            <label for="material">Material</label>
             <input type="text" id="material" required>
         </div>
 
@@ -465,6 +485,44 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+// === AUTOCOMPLETADO DE CÓDIGO DE MATERIAL ===
+document.addEventListener("DOMContentLoaded", function () {
+    const inputMaterial = document.getElementById("material");
+    const lista = document.createElement("div");
+    lista.className = "sugerencias-lista";
+    inputMaterial.parentNode.style.position = "relative";
+    inputMaterial.parentNode.appendChild(lista);
+
+    inputMaterial.addEventListener("input", function () {
+        const texto = this.value.trim();
+        lista.innerHTML = "";
+
+        if (texto.length < 2) return; // no buscar con menos de 2 letras
+
+        fetch(`buscar_material.php?term=${encodeURIComponent(texto)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.length === 0) return;
+                data.forEach(item => {
+                    const opcion = document.createElement("div");
+                    opcion.className = "sugerencia-item";
+                    opcion.textContent = item;
+                    opcion.onclick = function () {
+                        inputMaterial.value = item;
+                        lista.innerHTML = "";
+                    };
+                    lista.appendChild(opcion);
+                });
+            })
+            .catch(err => console.error(err));
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!lista.contains(e.target) && e.target !== inputMaterial) {
+            lista.innerHTML = "";
+        }
+    });
+});
 </script>
 </body>
 </html>

@@ -8,7 +8,8 @@ $serverName = "10.10.1.144";
 $connectionOptions = array(
     "Database" => "Adm_JMAS",
     "Uid" => "sa",
-    "PWD" => "Mrrobot2025"
+    "PWD" => "Mrrobot2025",
+    "CharacterSet" => "UTF-8" 
 );
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
