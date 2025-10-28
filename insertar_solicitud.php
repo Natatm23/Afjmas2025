@@ -25,7 +25,7 @@ $fecha = $_POST['fecha'] ?? null;
 $usuario = $_POST['usuario'] ?? null;
 $idEmpleado = $_POST['idEmpleado'] ?? null;
 
-// Columnas en el orden correcto (agregamos IdEmpleado y Usuario)
+
 $columns = [
     'IdEmpleado', 'Usuario', 'FechaElaboracion', 'Departamento',
     'Material1','Cantidad1','Justificacion1',
