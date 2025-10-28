@@ -1,5 +1,5 @@
 <?php
-session_start(); // Asegúrate de tener la sesión iniciada
+session_start(); 
 
 $nombre_departamento_usuario = isset($_SESSION['nombre_departamento']) ? $_SESSION['nombre_departamento'] : '';
 
