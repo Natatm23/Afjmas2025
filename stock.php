@@ -7,7 +7,7 @@ session_start();
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Dashboard AFFIJO2025</title>
+<title>STOCK</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -140,6 +140,25 @@ main.content {
     color: #721c24;             /* texto rojo oscuro */
     font-weight: bold;
 }
+
+.boton-generar {
+            margin-top: 20px;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
+        }
+
+        .boton-generar:hover {
+            background-color: #218838;
+        }
 </style>
 </head>
 
@@ -174,47 +193,47 @@ main.content {
 
 <main class="content" id="mainContent">
 
-<!-- Mostrar Unidad del usuario -->
-    <section class="unidad-section" style="margin-bottom: 15px; text-align: center;">
-        <?php
-
-        if (isset($_SESSION['unidad'])) {
-            echo "<div class='unidad-box' 
-                    style='background: #014070; color: white; padding: 10px 15px; border-radius: 10px;
-                           font-size: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: inline-block;'>
-                    🚚 Unidad: <strong>{$_SESSION['unidad']}</strong>
-                  </div>";
-        } else {
-            echo "<div class='unidad-box' 
-                    style='background: #999; color: white; padding: 10px 15px; border-radius: 10px;
-                           font-size: 16px; display: inline-block;'>
-                    🚚 Sin unidad asignada 
-                  </div>";
-        }
-        ?>
-    </section>
+ <!-- 🔘 Botón de Reordenar -->
+            </div>
+        <button class="boton-generar" onclick="generarOrden()">🧾 Solicitar resurtimiento</button>
+            </div>
+            
 
 <!-- Sección Material Bajo -->
 <section class="dashboard-section">
     <div class="stock-container">
-        <h2><i class="fas fa-boxes"></i> Materiales con stock bajo</h2>
+        <?php
+        // Recuperar el valor de la unidad desde la sesión
+        $unidad = isset($_SESSION['unidad']) ? trim($_SESSION['unidad']) : null;
+        ?>
+        <h2>
+            <i class="fas fa-boxes"></i>
+            <?php 
+                if ($unidad) {
+                    echo "Stock en unidad: <span style='color:rgb(1,62,112); font-weight:bold;'>$unidad</span>";
+                } else {
+                    echo "Stock en unidad (sin asignar)";
+                }
+            ?>
+        </h2>
+
         <div class="table-wrapper">
             <table class="stock-table">
                 <thead>
                     <tr>
                         <th>Código</th>
                         <th>Descripción</th>
-                        <th>Cantidad</th>
+                        <th>Existencia</th>
+                        <th>Cantidad máxima</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
                 if (isset($conn) && $conn) {
-                    $unidad = isset($_SESSION['unidad']) ? trim($_SESSION['unidad']) : null;
                     if ($unidad) {
-                        $sql = "SELECT IdMaterial, Descripcion, Existencia 
+                        $sql = "SELECT IdMaterial, Descripcion, Existencia, Maximo
                                 FROM AFM_Stock_Vehiculos 
-                                WHERE IdUnidad = ? AND Existencia <= 5 
+                                WHERE IdUnidad = ? 
                                 ORDER BY Existencia ASC";
                         $params = array($unidad);
                         $result = sqlsrv_query($conn, $sql, $params);
@@ -223,20 +242,24 @@ main.content {
                             while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
                                 $codigo = htmlspecialchars($row['IdMaterial']);
                                 $desc   = htmlspecialchars($row['Descripcion']);
-                                $cant   = htmlspecialchars($row['Existencia']);
+                                $cant   = (int)$row['Existencia'];
+                                $maximo = htmlspecialchars($row['Maximo']);
 
-                                // Todas las filas con stock bajo se verán en rojo
-                                echo "<tr class='stock-bajo'>
+                                // 🔴 Solo marcar en rojo si la existencia es menor a 5
+                                $class = ($cant < 5) ? 'stock-bajo' : '';
+
+                                echo "<tr class='{$class}'>
                                         <td>{$codigo}</td>
                                         <td title=\"{$desc}\">{$desc}</td>
                                         <td>{$cant}</td>
+                                        <td>{$maximo}</td>
                                       </tr>";
                             }
                         } else {
-                            echo '<tr><td colspan="3" class="no-data">No hay materiales con stock bajo.</td></tr>';
+                            echo '<tr><td colspan="4" class="no-data">No hay materiales registrados.</td></tr>';
                         }
                     } else {
-                        echo '<tr><td colspan="3" class="no-data">Unidad no definida en sesión.</td></tr>';
+                        echo '<tr><td colspan="4" class="no-data">Unidad no definida en sesión.</td></tr>';
                     }
                 }
                 ?>
@@ -246,51 +269,8 @@ main.content {
     </div>
 </section>
 
-    <!-- Sección Tickets Abiertos -->
-    <section class="dashboard-section">
-        <div class="stock-container">
-            <h2><i class="fas fa-file-alt"></i> Tickets abiertos</h2>
-            <div class="table-wrapper">
-                <table class="stock-table">
-                    <thead>
-                        <tr>
-                            <th>Id ticket</th>
-                            <th>Fecha asignada</th>
-                            <th>Ubicacion</th>
-                            <th>Urgencia</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>—</td><td>No implementado aún</td><td>—</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
 
-    <!-- Sección 3 -->
-    <section class="dashboard-section">
-        <div class="stock-container">
-            <h2><i class="fas fa-warehouse"></i> Materiales con stock suficiente</h2>
-            <div class="table-wrapper">
-                <table class="stock-table">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Descripción</th>
-                            <th>Cantidad</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>—</td><td>No implementado aún</td><td>—</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-</main>
-
+<!--SCRIPT PARA HACER FUNCIONAR EL TOOLBAR-->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const drawer = document.getElementById('drawer');
@@ -330,5 +310,3 @@ function cerrarSesion(){
     }
 }
 </script>
-</body>
-</html>

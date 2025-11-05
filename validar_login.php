@@ -24,6 +24,7 @@ SELECT
     L.PassAFMovil,
     L.IdEmpleado,
     L.IdDepto,
+    L.Unidad,
     D.NombreDepartamento
 FROM 
     LoginAFMovil AS L
@@ -48,6 +49,7 @@ if (sqlsrv_has_rows($stmt)) {
     $_SESSION['usuario'] = $row['UsarioAFMovil'];
     $_SESSION['id_empleado'] = $row['IdEmpleado'];
     $_SESSION['id_depto'] = $row['IdDepto'];
+    $_SESSION['unidad'] = $row['Unidad'];
     $_SESSION['nombre_departamento'] = $row['NombreDepartamento'];
 
     echo "<script>

@@ -261,7 +261,7 @@ if ($conn) {
         <a href="generar_reporte.php" onclick="closeDrawer()"><i class="fas fa-file-alt"></i>Generar reporte</a>
         <a href="editar_reporte.php"><i class="fas fa-edit"></i>Editar reporte</a>
         <a href="eliminar_reporte.php"><i class="fas fa-trash"></i>Eliminar reporte</a>
-        <a href="#" onclick="closeDrawer()"><i class="fas fa-boxes"></i> Stock</a>
+        <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
         <a href="#" onclick="closeDrawer()"><i class="fas fa-user"></i>Mi información</a>
         <a href="#" onclick="cerrarSesion(); closeDrawer();"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a>
     </div>
