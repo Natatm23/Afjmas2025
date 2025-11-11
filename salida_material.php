@@ -50,8 +50,7 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f9f9f9;
-        }
-
+        } 
         .toolbar {
             position: fixed;
             top: 0;
@@ -172,11 +171,11 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
         .campo textarea,
         .campo select {
             padding: 10px;
-            border: 1px solid #ccc;
+             border: 1px solid #ccc; 
             border-radius: 10px;
             font-size: 15px;
             background-color: #fff;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+           box-shadow: none;
         }
 
         .boton-agregar {
@@ -257,16 +256,7 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
                 font-size: 12px;
             }
         }
-        .sugerencias-lista {
-            position: absolute;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            max-height: 150px;
-            overflow-y: auto;
-            width: 100%;
-            z-index: 1000;
-        }
+       
 
         .sugerencia-item {
             padding: 8px;

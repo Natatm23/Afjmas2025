@@ -28,4 +28,3 @@ if ($stmt) {
 }
 
 sqlsrv_close($conn);
-?>

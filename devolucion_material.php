@@ -167,18 +167,6 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
             .boton-agregar, .boton-generar { font-size: 15px; }
             table { font-size: 12px; }
         }
-
-        .sugerencias-lista {
-            position: absolute;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            max-height: 150px;
-            overflow-y: auto;
-            width: 100%;
-            z-index: 1000;
-        }
-
         .sugerencia-item {
             padding: 8px;
             cursor: pointer;
