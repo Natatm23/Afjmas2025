@@ -143,6 +143,69 @@ main.content {
 </style>
 </head>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-messaging-compat.js"></script>
+
+<script>
+  // Configuración de tu app Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAgiTRV96wSF84xSmpH0ezBkgGQ1ozlB2E",
+    authDomain: "jmas-notificaciones.firebaseapp.com",
+    projectId: "jmas-notificaciones",
+    storageBucket: "jmas-notificaciones.firebasestorage.app",
+    messagingSenderId: "446954447205",
+    appId: "1:446954447205:web:06143565873724c8de418c"
+  };
+
+  // Inicializa Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const messaging = firebase.messaging();
+
+  // ✅ Registrar manualmente el Service Worker en la carpeta correcta
+  navigator.serviceWorker.register('/Afjmas2025/firebase-messaging-sw.js')
+  .then((registration) => {
+    console.log("✅ Service Worker registrado correctamente:", registration);
+
+    // Pide permiso para notificaciones
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        console.log("🔔 Permiso concedido para notificaciones.");
+
+        // Obtener token usando el service worker registrado
+        messaging.getToken({ serviceWorkerRegistration: registration })
+        .then((currentToken) => {
+          if (currentToken) {
+            console.log("🔑 Token del dispositivo:", currentToken);
+            // Aquí podrías enviarlo a tu servidor PHP
+          } else {
+            console.log("⚠️ No se pudo obtener el token.");
+          }
+        })
+        .catch((err) => {
+          console.error("Error al obtener el token:", err);
+        });
+      } else {
+        console.log("❌ Permiso denegado para notificaciones.");
+      }
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Error al registrar el Service Worker:", err);
+  });
+
+  // Manejar notificaciones cuando la app está abierta
+  messaging.onMessage((payload) => {
+    console.log("📨 Notificación recibida:", payload);
+    new Notification(payload.notification.title, {
+      body: payload.notification.body,
+      icon: payload.notification.icon
+    });
+  });
+</script>
+
+
+
 <body>
 
 <!-- Toolbar -->
@@ -158,7 +221,8 @@ main.content {
 
 <!-- Drawer -->
 <nav id="drawer" class="drawer" aria-hidden="true">
-    <a href="dashboard.php"><i class="fas fa-home"></i> Inicio</a>
+     <a href="dashboard.php"><i class="fas fa-home"></i> Inicio</a>
+    <a href="usuarios.php"><i class="fas fa-users"></i> Usuarios</a>
     <a href="salida_material.php"><i class="fas fa-truck-loading"></i> Salida de material</a>
     <a href="devolucion_material.php"><i class="fas fa-truck fa-flip-horizontal"></i> Devolución de material</a>
     <a href="generar_reporte.php"><i class="fas fa-file-alt"></i> Generar reporte</a>
@@ -232,6 +296,9 @@ main.content {
                                         <td>{$cant}</td>
                                       </tr>";
                             }
+
+                             // 🔔 Enviar notificación si hay materiales con stock bajo
+                                include('notificar_stock_bajo.php');
                         } else {
                             echo '<tr><td colspan="3" class="no-data">No hay materiales con stock bajo.</td></tr>';
                         }

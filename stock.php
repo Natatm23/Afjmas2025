@@ -178,6 +178,7 @@ main.content {
 <!-- Drawer -->
 <nav id="drawer" class="drawer" aria-hidden="true">
     <a href="dashboard.php"><i class="fas fa-home"></i> Inicio</a>
+    <a href="usuarios.php"><i class="fas fa-users"></i> Usuarios</a>
     <a href="salida_material.php"><i class="fas fa-truck-loading"></i> Salida de material</a>
     <a href="devolucion_material.php"><i class="fas fa-truck fa-flip-horizontal"></i> Devolución de material</a>
     <a href="generar_reporte.php"><i class="fas fa-file-alt"></i> Generar reporte</a>

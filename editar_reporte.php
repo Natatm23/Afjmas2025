@@ -105,15 +105,16 @@ if ($conn) {
 
 <!-- Drawer -->
 <<div class="drawer" id="drawer">
-       <a href="dashboard.php" onclick="closeDrawer()"><i class="fas fa-home"></i> Inicio
-        <a href="salida_material.php" onclick="closeDrawer()"><i class="fas fa-truck-loading"></i>Salida de material</a>
-        <a href="devolucion_material.php" onclick="closeDrawer()"><i class="fas fa-truck fa-flip-horizontal"></i>Devolución de material</a>
-        <a href="generar_reporte.php" onclick="closeDrawer()"><i class="fas fa-file-alt"></i>Generar reporte</a>
-        <a href="editar_reporte.php"><i class="fas fa-edit"></i>Editar reporte</a>
-        <a href="eliminar_reporte.php"><i class="fas fa-trash"></i>Eliminar reporte</a>
-        <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
-        <a href="#" onclick="closeDrawer()"><i class="fas fa-user"></i>Mi información</a>
-        <a href="#" onclick="cerrarSesion(); closeDrawer();"><i class="fas fa-sign-out-alt"></i>Cerrar sesión</a>
+       <a href="dashboard.php"><i class="fas fa-home"></i> Inicio</a>
+    <a href="usuarios.php"><i class="fas fa-users"></i> Usuarios</a>
+    <a href="salida_material.php"><i class="fas fa-truck-loading"></i> Salida de material</a>
+    <a href="devolucion_material.php"><i class="fas fa-truck fa-flip-horizontal"></i> Devolución de material</a>
+    <a href="generar_reporte.php"><i class="fas fa-file-alt"></i> Generar reporte</a>
+    <a href="editar_reporte.php"><i class="fas fa-edit"></i> Editar reporte</a>
+    <a href="eliminar_reporte.php"><i class="fas fa-trash"></i> Eliminar reporte</a>
+    <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
+    <a href="#"><i class="fas fa-user"></i> Mi información</a>
+    <a href="#" onclick="cerrarSesion(); return false;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
     </div>
 
 
