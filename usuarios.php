@@ -1,55 +1,4 @@
 <?php
-require "conexion_lecturacel.php";
-
-$direccion = "";
-$colonia = "";
-$mensaje = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    $modo   = $_POST['modo_busqueda'] ?? '';
-    $id     = $_POST['id_medidor'] ?? '';
-    $nombre = $_POST['nombre_cliente'] ?? '';
-
-    if ($modo == "id" && !empty($id)) {
-
-        $sql = "SELECT mednume_us, dire_us, colo_us 
-                FROM usuarios 
-                WHERE mednume_us = ?";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-
-    } elseif ($modo == "nombre" && !empty($nombre)) {
-
-        $sql = "SELECT mednume_us, dire_us, colo_us 
-                FROM usuarios 
-                WHERE nomb_us LIKE ?";
-
-        $like = "%".$nombre."%";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $like);
-
-    } else {
-        $mensaje = "⚠ Debes ingresar un valor para buscar.";
-    }
-
-    if (isset($stmt)) {
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows == 0) {
-            $mensaje = "❌ No se encontró ningún medidor.";
-        } else {
-            $data = $result->fetch_assoc();
-            $direccion = $data['dire_us'];
-            $colonia   = $data['colo_us'];
-        }
-    }
-}
-?>
-
-<?php
 session_start();
 ?>
 <!DOCTYPE html>
@@ -287,7 +236,6 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
 
         <div class="radio-group">
             <label><input type="radio" name="modo_busqueda" value="id" checked onclick="mostrarCampo('id')"> Numero de medidor</label>
-            <label><input type="radio" name="modo_busqueda" value="nombre" onclick="mostrarCampo('nombre')"> Nombre</label>
             <label><input type="radio" name="modo_busqueda" value="id cuenta" onclick="mostrarCampo('id cuenta')"> Id cuenta</label>
             <label><input type="radio" name="modo_busqueda" value="cuenta" onclick="mostrarCampo('cuenta')"> Cuenta</label>
         </div>
@@ -394,18 +342,12 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
 
 <script>
 function mostrarCampo(modo) {
-    // Ocultar todos
     document.getElementById("campo_id").style.display = "none";
-    document.getElementById("campo_nombre").style.display = "none";
     document.getElementById("campo_id_cuenta").style.display = "none";
     document.getElementById("campo_cuenta").style.display = "none";
 
-    // Mostrar el correspondiente
     if (modo === "id") {
         document.getElementById("campo_id").style.display = "block";
-    }
-    if (modo === "nombre") {
-        document.getElementById("campo_nombre").style.display = "block";
     }
     if (modo === "id cuenta") {
         document.getElementById("campo_id_cuenta").style.display = "block";
@@ -414,6 +356,7 @@ function mostrarCampo(modo) {
         document.getElementById("campo_cuenta").style.display = "block";
     }
 }
+
 </script>
 </div>
 
@@ -468,14 +411,12 @@ function buscarMedidor(event) {
     })
     .then(r => r.json())
     .then(data => {
+    document.getElementById("mensaje").innerText = data.mensaje ?? "";
+    document.getElementById("Nombre").value      = data.nombre ?? "";
+    document.getElementById("direccion").value   = data.direccion ?? "";
+    document.getElementById("colonia").value     = data.colonia ?? "";
+});
 
-        // Mostrar mensaje
-        document.getElementById("mensaje").innerText = data.mensaje ?? "";
-
-        // Rellenar datos
-        document.getElementById("direccion").value = data.direccion ?? "";
-        document.getElementById("colonia").value   = data.colonia ?? "";
-    });
 }
 </script>
 </body>
