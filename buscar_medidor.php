@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $idCuenta  = $_POST['id_cuenta'] ?? '';
     $cuenta    = $_POST['cuenta'] ?? '';
 
-    // ==========================PENDEINTEEEEEEEEEEEEEEEEEEEEEEE gggg
+    // ==========================PENDEINTEEEEEEEEEEEEEEEEEEEEEEE lll
     // BUSCAR POR MEDIDOR (ID)
     // ==========================
     if ($modo == "id" && !empty($id)) {
