@@ -9,8 +9,12 @@ $conn = new mysqli($serverName, $username, $password, $database);
 
 // Verificar conexión
 if ($conn->connect_error) {
-    die("Error de conexión a MySQL: " . $conn->connect_error);
+    echo json_encode([
+        "mensaje" => "❌ Error de conexión a la base de datos"
+    ]);
+    exit;
 }
+
 
 // Forzar UTF-8
 $conn->set_charset("utf8");

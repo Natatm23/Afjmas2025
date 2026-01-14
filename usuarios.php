@@ -146,7 +146,7 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
     background: #1e3558;
 }
 
-/* SEPARADOR bonito */
+/* SEPARADOR */
 .separador {
     border: none;
     border-top: 1px solid #ccc;
@@ -288,7 +288,7 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
         <input type="text" id="colonia" name="colonia" readonly>
     </div>
 
-        <!-- TABLA -->
+        <!-- TABLA DE LECTURAS-->
         <table class="tabla-lecturas moderno-tabla">
             <thead>
                 <tr>
@@ -296,6 +296,7 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
                     <th>Lectura anterior</th>
                     <th>Lectura actual</th>
                     <th>Consumo</th>
+                    <th>Nota</th>
                     <th>Lectura real</th>
                 </tr>
             </thead>
@@ -305,6 +306,7 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
                     <td id="f1_ant"></td>
                     <td id="f1_act"></td>
                     <td id="f1_con"></td>
+                    <td id="f1_nota"></td>
                     <td id="f1_real"></td>
                 </tr>
                 <tr>
@@ -312,6 +314,7 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
                     <td id="f2_ant"></td>
                     <td id="f2_act"></td>
                     <td id="f2_con"></td>
+                    <td id="f2_nota"></td>
                     <td id="f2_real"></td>
                 </tr>
                 <tr>
@@ -319,6 +322,7 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
                     <td id="f3_ant"></td>
                     <td id="f3_act"></td>
                     <td id="f3_con"></td>
+                    <td id="f3_nota"></td>
                     <td id="f3_real"></td>
                 </tr>
                 <tr>
@@ -326,15 +330,79 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
                     <td id="f4_ant"></td>
                     <td id="f4_act"></td>
                     <td id="f4_con"></td>
+                    <td id="f4_nota"></td>
                     <td id="f4_real"></td>
                 </tr>
+
+                <tr>
+                    <td id="f5_fecha"></td>
+                    <td id="f5_ant"></td>
+                    <td id="f5_act"></td>
+                    <td id="f5_con"></td>
+                    <td id="f5_nota"></td>
+                    <td id="f5_real"></td>
+                </tr>
+
             </tbody>
         </table>
 
-        <div class="campo">
-            <label>Observaciones</label>
-            <textarea id="observaciones" class="observaciones-area moderno-textarea" readonly></textarea>
-        </div>
+        <!-- TABLA DE OBSERVACIONES-->
+        <table class="tabla-lecturas moderno-tabla">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Observacion</th>
+                    <th>Concepto</th>
+                    <th>Descripcion</th>
+                    <th>Monto</th>
+                    <th>Capturó</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="f1_fecha"></td>
+                    <td id="f1_obs"></td>
+                    <td id="f1_conc"></td>
+                    <td id="f1_desc"></td>
+                    <td id="f1_monto"></td>
+                    <td id="f1_capturó"></td>
+                </tr>
+                <tr>
+                    <td id="f2_fecha"></td>
+                    <td id="f2_obs"></td>
+                    <td id="f2_conc"></td>
+                    <td id="f2_desc"></td>
+                    <td id="f2_monto"></td>
+                    <td id="f2_capturó"></td>
+                </tr>
+                <tr>
+                    <td id="f3_fecha"></td>
+                    <td id="f3_obs"></td>
+                    <td id="f3_conc"></td>
+                    <td id="f3_desc"></td>
+                    <td id="f3_monto"></td>
+                    <td id="f3_capturó"></td>
+                </tr>
+                <tr>
+                    <td id="f4_fecha"></td>
+                    <td id="f4_obs"></td>
+                    <td id="f4_conc"></td>
+                    <td id="f4_desc"></td>
+                    <td id="f4_monto"></td>
+                    <td id="f4_capturó"></td>
+                </tr>
+
+                <tr>
+                    <td id="f5_fecha"></td>
+                    <td id="f5_obs"></td>
+                    <td id="f5_conc"></td>
+                    <td id="f5_desc"></td>
+                    <td id="f5_monto"></td>
+                    <td id="f5_capturó"></td>
+                </tr>
+
+            </tbody>
+        </table>
 
     </form>
 </div>
@@ -411,12 +479,39 @@ function buscarMedidor(event) {
     })
     .then(r => r.json())
     .then(data => {
-    document.getElementById("mensaje").innerText = data.mensaje ?? "";
-    document.getElementById("Nombre").value      = data.nombre ?? "";
-    document.getElementById("direccion").value   = data.direccion ?? "";
-    document.getElementById("colonia").value     = data.colonia ?? "";
-});
 
+        // Datos del usuario
+        document.getElementById("mensaje").innerText = data.mensaje ?? "";
+        document.getElementById("Nombre").value      = data.nombre ?? "";
+        document.getElementById("direccion").value   = data.direccion ?? "";
+        document.getElementById("colonia").value     = data.colonia ?? "";
+
+        // Limpiar tabla
+        for (let i = 1; i <= 5; i++) {
+            document.getElementById(`f${i}_fecha`).innerText = "";
+            document.getElementById(`f${i}_ant`).innerText   = "";
+            document.getElementById(`f${i}_act`).innerText   = "";
+            document.getElementById(`f${i}_con`).innerText   = "";
+            document.getElementById(`f${i}_real`).innerText  = "";
+        }
+
+        // Pintar lecturas (máx 5)
+        if (Array.isArray(data.lecturas)) {
+            data.lecturas.forEach((l, index) => {
+                if (index < 5) {
+                    const fila = index + 1;
+                    document.getElementById(`f${fila}_fecha`).innerText = l.fecha_registro;
+                    document.getElementById(`f${fila}_ant`).innerText   = l.lectura_anterior;
+                    document.getElementById(`f${fila}_act`).innerText   = l.lectura_actual;
+                    document.getElementById(`f${fila}_con`).innerText   = l.consumo;
+                    document.getElementById(`f${fila}_real`).innerText  = l.lectura_real;
+                }
+            });
+        }
+    })
+    .catch(() => {
+        document.getElementById("mensaje").innerText = "❌ Error al buscar los datos";
+    });
 }
 </script>
 </body>

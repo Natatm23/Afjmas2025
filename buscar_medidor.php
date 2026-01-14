@@ -1,68 +1,80 @@
-<?php 
-require "conexion_lecturacel.php"; // conexión MySQL
+<?php
+header('Content-Type: application/json; charset=utf-8');
+require "conexion_lecturacel.php";
 
 $nombre = "";
 $direccion = "";
 $colonia = "";
 $mensaje = "";
+$lecturas = [];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $modo      = $_POST['modo_busqueda'] ?? '';
-    $id        = $_POST['id_medidor'] ?? '';
-    $idCuenta  = $_POST['id_cuenta'] ?? '';
-    $cuenta    = $_POST['cuenta'] ?? '';
+    $modo = $_POST['modo_busqueda'] ?? '';
+    $id   = $_POST['id_medidor'] ?? '';
 
-    // ==========================PENDEINTEEEEEEEEEEEEEEEEEEEEEEE lll
-    // BUSCAR POR MEDIDOR (ID)
-    // ==========================
-    if ($modo == "id" && !empty($id)) {
+    if ($modo === "id" && !empty($id)) {
 
-        $sql = "SELECT nomb_us, mednume_us, dire_us, colo_us 
-                FROM usuarios WHERE mednume_us = ?";
+        $sql = "
+            SELECT 
+                u.nomb_us,
+                u.dire_us,
+                u.colo_us,
+                l.fech_le,
+                l.lant_le,
+                l.lact_le,
+                l.lect_le
+            FROM usuarios u
+            LEFT JOIN lecturas l 
+                ON u.Id = l.IdUsuario
+            WHERE u.mednume_us = ?
+            ORDER BY l.fech_le DESC
+            LIMIT 5
+        ";
+
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id);
+        if (!$stmt) {
+            echo json_encode(["mensaje" => "❌ Error en prepare"]);
+            exit;
+        }
 
-    // ==========================
-    // BUSCAR POR ID CUENTA
-    // ==========================
-    } elseif ($modo == "id cuenta" && !empty($idCuenta)) {
-
-        $sql = "SELECT nomb_us, cuent_us, dire_us, colo_us 
-                FROM usuarios WHERE cuent_us = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $idCuenta);
-
-    // ==========================
-    // BUSCAR POR CUENTA
-    // ==========================
-    } elseif ($modo == "cuenta" && !empty($cuenta)) {
-
-        $sql = "SELECT nomb_us, numcue_us, dire_us, colo_us 
-                FROM usuarios WHERE numcue_us = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $cuenta);
-
-    } else {
-        $mensaje = "⚠ Debes ingresar un valor para buscar.";
-    }
-
-    // ==========================
-    // EJECUTAR CONSULTA
-    // ==========================
-    if (isset($stmt)) {
-
+        $stmt->bind_param("s", $id);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if ($result->num_rows == 0) {
-            $mensaje = "❌ No se encontró ningún registro.";
+        if ($result->num_rows === 0) {
+            $mensaje = "❌ No se encontraron lecturas";
         } else {
-            $data = $result->fetch_assoc();
-            $nombre    = $data["nomb_us"];
-            $direccion = $data["dire_us"];
-            $colonia   = $data["colo_us"];
+
+            $primero = true;
+
+            while ($row = $result->fetch_assoc()) {
+
+                if ($primero) {
+                    $nombre    = $row["nomb_us"];
+                    $direccion = $row["dire_us"];
+                    $colonia   = $row["colo_us"];
+                    $primero = false;
+                }
+
+                if ($row["fech_le"] !== null) {
+
+                    $ant = (int)$row["lant_le"];
+                    $act = (int)$row["lact_le"];
+                    $real = (int)$row["lect_le"];
+
+                    $lecturas[] = [
+                        "fecha_registro"   => date("d-m-Y", strtotime($row["fech_le"])),
+                        "lectura_anterior" => $ant,
+                        "lectura_actual"   => $act,
+                        "consumo"          => $act - $ant,
+                        "lectura_real"     => $real
+                    ];
+                }
+            }
         }
+    } else {
+        $mensaje = "⚠ Debes ingresar un medidor";
     }
 }
 
@@ -70,6 +82,6 @@ echo json_encode([
     "mensaje"   => $mensaje,
     "nombre"    => $nombre,
     "direccion" => $direccion,
-    "colonia"   => $colonia
+    "colonia"   => $colonia,
+    "lecturas"  => $lecturas
 ]);
-?>  
