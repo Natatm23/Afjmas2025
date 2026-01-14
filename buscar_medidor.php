@@ -23,7 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 l.fech_le,
                 l.lant_le,
                 l.lact_le,
-                l.lect_le
+                l.lect_le,
+                l.nota_le
             FROM usuarios u
             LEFT JOIN lecturas l 
                 ON u.Id = l.IdUsuario
@@ -59,22 +60,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 if ($row["fech_le"] !== null) {
 
-                    $ant = (int)$row["lant_le"];
-                    $act = (int)$row["lact_le"];
+                    $ant  = (int)$row["lant_le"];
+                    $act  = (int)$row["lact_le"];
                     $real = (int)$row["lect_le"];
 
                     $lecturas[] = [
-                        "fecha_registro"   => date("d-m-Y", strtotime($row["fech_le"])),
-                        "lectura_anterior" => $ant,
-                        "lectura_actual"   => $act,
-                        "consumo"          => $act - $ant,
-                        "lectura_real"     => $real
+                        "fecha_registro"    => date("d-m-Y", strtotime($row["fech_le"])),
+                        "lectura_anterior"  => $ant,
+                        "lectura_actual"    => $act,
+                        "consumo"           => $act - $ant,
+                        "lectura_real"      => $real,
+                        "nota"              => $row["nota_le"] ?? ""
                     ];
                 }
             }
         }
     } else {
-        $mensaje = "⚠ Debes ingresar un medidor";
+        $mensaje = "⚠ Debes ingresar un número de medidor";
     }
 }
 

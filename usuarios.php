@@ -493,6 +493,7 @@ function buscarMedidor(event) {
             document.getElementById(`f${i}_act`).innerText   = "";
             document.getElementById(`f${i}_con`).innerText   = "";
             document.getElementById(`f${i}_real`).innerText  = "";
+            document.getElementById(`f${i}_nota`).innerText = "";
         }
 
         // Pintar lecturas (máx 5)
@@ -505,6 +506,8 @@ function buscarMedidor(event) {
                     document.getElementById(`f${fila}_act`).innerText   = l.lectura_actual;
                     document.getElementById(`f${fila}_con`).innerText   = l.consumo;
                     document.getElementById(`f${fila}_real`).innerText  = l.lectura_real;
+                    document.getElementById(`f${fila}_nota`).innerText = l.nota;
+
                 }
             });
         }
