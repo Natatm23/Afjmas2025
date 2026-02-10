@@ -160,6 +160,7 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
     font-size: 14px;
     border-radius: 10px;
     overflow: hidden;
+    margin-bottom: 30px; 
 }
 
 .moderno-tabla thead {
@@ -235,9 +236,8 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
         <label class="subtitulo">Buscar por:</label>
 
         <div class="radio-group">
-            <label><input type="radio" name="modo_busqueda" value="id" checked onclick="mostrarCampo('id')"> Numero de medidor</label>
-            <label><input type="radio" name="modo_busqueda" value="id cuenta" onclick="mostrarCampo('id cuenta')"> Id cuenta</label>
-            <label><input type="radio" name="modo_busqueda" value="cuenta" onclick="mostrarCampo('cuenta')"> Cuenta</label>
+            <label><input type="radio" name="modo_busqueda" value="id" checked> Numero de medidor</label>
+            <label><input type="radio" name="modo_busqueda" value="id cuenta"> Id cuenta</label>
         </div>
     </div>
 
@@ -247,24 +247,13 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
         <input type="number" id="id_medidor" name="id_medidor" placeholder="Ingresa el numero de medidor">
     </div>
 
-    <!-- Campo para Nombre -->
-    <div class="campo" id="campo_nombre" style="display:none;">
-        <label for="nombre_cliente">Nombre del Usuario</label>
-        <input type="text" id="nombre_cliente" name="nombre_cliente" placeholder="Ingresa el nombre">
-    </div>
+
 
     <!-- Campo para id cuenta -->
     <div class="campo" id="campo_id_cuenta" style="display:none;">
         <label for="id_cuenta">Id cuenta</label>
         <input type="text" id="id_cuenta" name="id_cuenta" placeholder="Ingresa el Id de la cuenta">
     </div>
-
-    <!-- Campo para cuenta -->
-    <div class="campo" id="campo_cuenta" style="display:none;">
-        <label for="cuenta">Cuenta</label>
-        <input type="text" id="cuenta" name="cuenta" placeholder="Ingresa la cuenta">
-    </div>
-
 
     <button type="submit" class="btn moderno-btn">Buscar</button>
 
@@ -351,79 +340,51 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
             <thead>
                 <tr>
                     <th>Fecha</th>
-                    <th>Observacion</th>
+                    <th>Observación</th>
                     <th>Concepto</th>
-                    <th>Descripcion</th>
-                    <th>Monto</th>
-                    <th>Capturó</th>
+                    <th>Descripción</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td id="f1_fecha"></td>
-                    <td id="f1_obs"></td>
-                    <td id="f1_conc"></td>
-                    <td id="f1_desc"></td>
-                    <td id="f1_monto"></td>
-                    <td id="f1_capturó"></td>
-                </tr>
-                <tr>
-                    <td id="f2_fecha"></td>
-                    <td id="f2_obs"></td>
-                    <td id="f2_conc"></td>
-                    <td id="f2_desc"></td>
-                    <td id="f2_monto"></td>
-                    <td id="f2_capturó"></td>
-                </tr>
-                <tr>
-                    <td id="f3_fecha"></td>
-                    <td id="f3_obs"></td>
-                    <td id="f3_conc"></td>
-                    <td id="f3_desc"></td>
-                    <td id="f3_monto"></td>
-                    <td id="f3_capturó"></td>
-                </tr>
-                <tr>
-                    <td id="f4_fecha"></td>
-                    <td id="f4_obs"></td>
-                    <td id="f4_conc"></td>
-                    <td id="f4_desc"></td>
-                    <td id="f4_monto"></td>
-                    <td id="f4_capturó"></td>
+                    <td id="o1_fecha"></td>
+                    <td id="o1_obs"></td>
+                    <td id="o1_conc"></td>
+                    <td id="o1_desc"></td>
                 </tr>
 
                 <tr>
-                    <td id="f5_fecha"></td>
-                    <td id="f5_obs"></td>
-                    <td id="f5_conc"></td>
-                    <td id="f5_desc"></td>
-                    <td id="f5_monto"></td>
-                    <td id="f5_capturó"></td>
+                    <td id="o2_fecha"></td>
+                    <td id="o2_obs"></td>
+                    <td id="o2_conc"></td>
+                    <td id="o2_desc"></td>
                 </tr>
 
+                <tr>
+                    <td id="o3_fecha"></td>
+                    <td id="o3_obs"></td>
+                    <td id="o3_conc"></td>
+                    <td id="o3_desc"></td>
+                </tr>
+
+                <tr>
+                    <td id="o4_fecha"></td>
+                    <td id="o4_obs"></td>
+                    <td id="o4_conc"></td>
+                    <td id="o4_desc"></td>
+                </tr>
+
+                <tr>
+                    <td id="o5_fecha"></td>
+                    <td id="o5_obs"></td>
+                    <td id="o5_conc"></td>
+                    <td id="o5_desc"></td>
+                </tr>
             </tbody>
         </table>
-
     </form>
 </div>
 
-
-<script>
-function mostrarCampo(modo) {
-    document.getElementById("campo_id").style.display = "none";
-    document.getElementById("campo_id_cuenta").style.display = "none";
-    document.getElementById("campo_cuenta").style.display = "none";
-
-    if (modo === "id") {
-        document.getElementById("campo_id").style.display = "block";
-    }
-    if (modo === "id cuenta") {
-        document.getElementById("campo_id_cuenta").style.display = "block";
-    }
-    if (modo === "cuenta") {
-        document.getElementById("campo_cuenta").style.display = "block";
-    }
-}
 
 </script>
 </div>
@@ -480,41 +441,127 @@ function buscarMedidor(event) {
     .then(r => r.json())
     .then(data => {
 
-        // Datos del usuario
         document.getElementById("mensaje").innerText = data.mensaje ?? "";
-        document.getElementById("Nombre").value      = data.nombre ?? "";
-        document.getElementById("direccion").value   = data.direccion ?? "";
-        document.getElementById("colonia").value     = data.colonia ?? "";
+        document.getElementById("Nombre").value = data.nombre ?? "";
+        document.getElementById("direccion").value = data.direccion ?? "";
+        document.getElementById("colonia").value = data.colonia ?? "";
 
-        // Limpiar tabla
+        /* ===== LIMPIAR LECTURAS ===== */
         for (let i = 1; i <= 5; i++) {
-            document.getElementById(`f${i}_fecha`).innerText = "";
-            document.getElementById(`f${i}_ant`).innerText   = "";
-            document.getElementById(`f${i}_act`).innerText   = "";
-            document.getElementById(`f${i}_con`).innerText   = "";
-            document.getElementById(`f${i}_real`).innerText  = "";
-            document.getElementById(`f${i}_nota`).innerText = "";
+            ["fecha","ant","act","con","nota","real"].forEach(c => {
+                document.getElementById(`f${i}_${c}`).innerText = "";
+            });
         }
 
-        // Pintar lecturas (máx 5)
+        /* ===== PINTAR LECTURAS ===== */
         if (Array.isArray(data.lecturas)) {
-            data.lecturas.forEach((l, index) => {
-                if (index < 5) {
-                    const fila = index + 1;
-                    document.getElementById(`f${fila}_fecha`).innerText = l.fecha_registro;
-                    document.getElementById(`f${fila}_ant`).innerText   = l.lectura_anterior;
-                    document.getElementById(`f${fila}_act`).innerText   = l.lectura_actual;
-                    document.getElementById(`f${fila}_con`).innerText   = l.consumo;
-                    document.getElementById(`f${fila}_real`).innerText  = l.lectura_real;
-                    document.getElementById(`f${fila}_nota`).innerText = l.nota;
-
+            data.lecturas.forEach((l, i) => {
+                const f = i + 1;
+                if (f <= 5) {
+                    document.getElementById(`f${f}_fecha`).innerText = l.fecha;
+                    document.getElementById(`f${f}_ant`).innerText   = l.lectura_anterior;
+                    document.getElementById(`f${f}_act`).innerText   = l.lectura_actual;
+                    document.getElementById(`f${f}_con`).innerText   = l.consumo;
+                    document.getElementById(`f${f}_nota`).innerText  = l.nota;
+                    document.getElementById(`f${f}_real`).innerText  = l.lectura_real;
                 }
             });
         }
+
+        /* ===== LIMPIAR OBSERVACIONES ===== */
+        for (let i = 1; i <= 5; i++) {
+            ["fecha","obs","conc","desc"].forEach(c => {
+                document.getElementById(`o${i}_${c}`).innerText = "";
+            });
+        }
+
+        /* ===== PINTAR OBSERVACIONES ===== */
+if (Array.isArray(data.observaciones)) {
+    data.observaciones.forEach((o, i) => {
+        const f = i + 1;
+        if (f <= 5) {
+            document.getElementById(`o${f}_fecha`).innerText = o.fecha ?? "";
+            document.getElementById(`o${f}_obs`).innerText   = o.observacion ?? "";
+            document.getElementById(`o${f}_conc`).innerText  = o.concepto ?? "";
+            document.getElementById(`o${f}_desc`).innerText  = o.descripcion ?? "";
+        }
+    });
+}
     })
     .catch(() => {
-        document.getElementById("mensaje").innerText = "❌ Error al buscar los datos";
+        document.getElementById("mensaje").innerText = "❌ Error al consultar";
     });
+}
+
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const radios = document.querySelectorAll("input[name='modo_busqueda']");
+
+    radios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            mostrarCampo(radio.value);
+        });
+    });
+});
+
+/* ===============================
+   LIMPIAR TODO
+=============================== */
+function limpiarTodo() {
+
+    // Inputs de búsqueda
+    ["id_medidor", "id_cuenta"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+    });
+
+    // Mensaje
+    const mensaje = document.getElementById("mensaje");
+    if (mensaje) mensaje.innerText = "";
+
+    // Datos cliente
+    ["Nombre", "direccion", "colonia"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+    });
+
+    // Tabla lecturas
+    for (let i = 1; i <= 5; i++) {
+        ["fecha", "ant", "act", "con", "nota", "real"].forEach(c => {
+            const td = document.getElementById(`f${i}_${c}`);
+            if (td) td.innerText = "";
+        });
+    }
+
+    // Tabla observaciones
+    for (let i = 1; i <= 5; i++) {
+        ["fecha", "obs", "conc", "desc"].forEach(c => {
+            const td = document.getElementById(`o${i}_${c}`);
+            if (td) td.innerText = "";
+        });
+    }
+}
+
+/* ===============================
+   MOSTRAR CAMPO
+=============================== */
+function mostrarCampo(tipo) {
+    limpiarTodo();
+
+    document.getElementById("campo_id").style.display = "none";
+    document.getElementById("campo_nombre").style.display = "none";
+    
+
+    if (tipo === "id") {
+        document.getElementById("campo_id").style.display = "block";
+    }
+    else if (tipo === "id cuenta") {
+        document.getElementById("campo_id_cuenta").style.display = "block";
+    }
 }
 </script>
 </body>
