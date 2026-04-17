@@ -268,6 +268,11 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
     </div>
 
     <div class="campo">
+        <label>Id Cuenta</label>
+        <input type="text" id="Id_cuenta" readonly>
+    </div>
+
+    <div class="campo">
         <label>Dirección</label>
         <textarea id="direccion" class="direccion-area moderno-textarea" readonly></textarea>
     </div>
@@ -366,7 +371,6 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
                     <td id="o3_conc"></td>
                     <td id="o3_desc"></td>
                 </tr>
-
                 <tr>
                     <td id="o4_fecha"></td>
                     <td id="o4_obs"></td>
@@ -442,60 +446,64 @@ function buscarMedidor(event) {
     .then(data => {
 
         document.getElementById("mensaje").innerText = data.mensaje ?? "";
-        document.getElementById("Nombre").value = data.nombre ?? "";
-        document.getElementById("direccion").value = data.direccion ?? "";
-        document.getElementById("colonia").value = data.colonia ?? "";
 
-        /* ===== LIMPIAR LECTURAS ===== */
+        document.getElementById("Nombre").value    = data.nombre ?? "";
+        document.getElementById("direccion").value = data.direccion ?? "";
+        document.getElementById("colonia").value   = data.colonia ?? "";
+
+        document.getElementById("Id_cuenta").value = data.IdUsuario ?? "";
+
+        /* LIMPIAR LECTURAS */
         for (let i = 1; i <= 5; i++) {
             ["fecha","ant","act","con","nota","real"].forEach(c => {
-                document.getElementById(`f${i}_${c}`).innerText = "";
+                const td = document.getElementById(`f${i}_${c}`);
+                if (td) td.innerText = "";
             });
         }
 
-        /* ===== PINTAR LECTURAS ===== */
+        /* PINTAR LECTURAS */
         if (Array.isArray(data.lecturas)) {
             data.lecturas.forEach((l, i) => {
                 const f = i + 1;
                 if (f <= 5) {
-                    document.getElementById(`f${f}_fecha`).innerText = l.fecha;
-                    document.getElementById(`f${f}_ant`).innerText   = l.lectura_anterior;
-                    document.getElementById(`f${f}_act`).innerText   = l.lectura_actual;
-                    document.getElementById(`f${f}_con`).innerText   = l.consumo;
-                    document.getElementById(`f${f}_nota`).innerText  = l.nota;
-                    document.getElementById(`f${f}_real`).innerText  = l.lectura_real;
+                    document.getElementById(`f${f}_fecha`).innerText = l.fecha ?? "";
+                    document.getElementById(`f${f}_ant`).innerText   = l.lectura_anterior ?? "";
+                    document.getElementById(`f${f}_act`).innerText   = l.lectura_actual ?? "";
+                    document.getElementById(`f${f}_con`).innerText   = l.consumo ?? "";
+                    document.getElementById(`f${f}_nota`).innerText  = l.nota ?? "";
+                    document.getElementById(`f${f}_real`).innerText  = l.lectura_real ?? "";
                 }
             });
         }
 
-        /* ===== LIMPIAR OBSERVACIONES ===== */
+        /* LIMPIAR OBSERVACIONES */
         for (let i = 1; i <= 5; i++) {
             ["fecha","obs","conc","desc"].forEach(c => {
-                document.getElementById(`o${i}_${c}`).innerText = "";
+                const td = document.getElementById(`o${i}_${c}`);
+                if (td) td.innerText = "";
             });
         }
 
-        /* ===== PINTAR OBSERVACIONES ===== */
-if (Array.isArray(data.observaciones)) {
-    data.observaciones.forEach((o, i) => {
-        const f = i + 1;
-        if (f <= 5) {
-            document.getElementById(`o${f}_fecha`).innerText = o.fecha ?? "";
-            document.getElementById(`o${f}_obs`).innerText   = o.observacion ?? "";
-            document.getElementById(`o${f}_conc`).innerText  = o.concepto ?? "";
-            document.getElementById(`o${f}_desc`).innerText  = o.descripcion ?? "";
+        /* PINTAR OBSERVACIONES */
+        if (Array.isArray(data.observaciones)) {
+            data.observaciones.forEach((o, i) => {
+                const f = i + 1;
+                if (f <= 5) {
+                    document.getElementById(`o${f}_fecha`).innerText = o.fecha ?? "";
+                    document.getElementById(`o${f}_obs`).innerText   = o.observacion ?? "";
+                    document.getElementById(`o${f}_conc`).innerText  = o.concepto ?? "";
+                    document.getElementById(`o${f}_desc`).innerText  = o.descripcion ?? "";
+                }
+            });
         }
-    });
-}
+
     })
     .catch(() => {
         document.getElementById("mensaje").innerText = "❌ Error al consultar";
+        document.getElementById("Id_cuenta").value = "";
     });
 }
-
-
 </script>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -547,7 +555,7 @@ function limpiarTodo() {
 }
 
 /* ===============================
-   MOSTRAR CAMPO
+   MOSTRAR CAMPO,CAMBIAR METODO 
 =============================== */
 function mostrarCampo(tipo) {
     limpiarTodo();
