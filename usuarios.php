@@ -219,6 +219,7 @@ body { font-family: 'Segoe UI', sans-serif; background:#f9f9f9; overflow-x: hidd
     <a href="eliminar_reporte.php"><i class="fas fa-trash"></i> Eliminar reporte</a>
     <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
     <a href="#"><i class="fas fa-user"></i> Mi información</a>
+    <a href="reportes.php"><i class="fas fa-chart-bar"></i> Reportes</a>
     <a href="#" onclick="cerrarSesion(); return false;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
 </nav>
 

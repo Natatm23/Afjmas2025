@@ -202,6 +202,7 @@ if ($stmt2 && $row2 = sqlsrv_fetch_array($stmt2, SQLSRV_FETCH_ASSOC)) {
     <a href="eliminar_reporte.php"><i class="fas fa-trash"></i> Eliminar reporte</a>
     <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
     <a href="#"><i class="fas fa-user"></i> Mi información</a>
+    <a href="reportes.php"><i class="fas fa-chart-bar"></i> Reportes</a>
     <a href="#" onclick="cerrarSesion(); return false;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
 </div>
 
